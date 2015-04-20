@@ -1,22 +1,48 @@
 # Spring Integration Tests With Mocks
 
-*Reducing a bit of boilerplate in integration tests that contain mocks in Spring Framework using JUnit and Mockito*
+This project is a fork of [springmockedtests](https://github.com/knes1/springmockedtests) and uses the same method for
+injecting beans. Thank you a lot, [Kresimir](https://github.com/knes1).
 
-This is a demo/sample app to show an idea how to write concise integration tests in Spring Framework that include a mix
-of Spring managed beans and beans mocked with Mockito.  Created for demo purposes for [this article](http://knes1.github.io/blog/2014/08/18/concise-integration-tests-that-contain-mocks-in-spring-framework/).
+The goal is to have a mechanism to inject a mock in the Spring Context so it can replace the original ones.
+I have used annotations in a bit different way.
 
-The most interesting stuff happens in [UserServiceImplIntegrationTest](src/test/java/com/knesek/springmockedtests/service/impl/UserServiceImplIntegrationTest.java).
-The classes used for simplified mocking are [MockedBeans](src/test/java/com/knesek/springmockedtests/com/knesek/springmockedtests/util/MockedBeans.java)
-and [MockImportRegistrar](src/test/java/com/knesek/springmockedtests/com/knesek/springmockedtests/util/MockImportRegistrar.java).
+Here's the test class:
 
-Aside from that, it shows how to create standalone console application with:
+```java
+@ComponentScan
+@EnableMockedBean
+@EnableAutoConfiguration
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = MySampleServiceTest.class)
+public class MySampleServiceTest {
 
-- Spring Framework
-- JPA / Hibernate
-- Spring Data
-- Tested with JUnit and Mockito
+    @MockedBean
+    private HelloWorldService helloWorldService;
 
-I hope you find it useful!
+    @Test
+    public void helloWorldIsCalledOnlyOnce() throws Exception {
 
---
-Kresimir
+        // WHEN I launch SampleSimpleApplication
+        SampleSimpleApplication.main(new String[0]);
+
+        // THEN HelloWorldService is called only once
+        verify(helloWorldService,times(1)).getHelloMessage();
+    }
+
+}
+```
+
+The class have to be annotated with `@EnableMockedBean`and every "*mocked bean*" with `MockedBean` To work properly.
+
+In this example a mock of type `HelloWorldService` is injected in the context and autowired in the field
+`helloWorldService`.
+
+
+Include the following dependency in your pom for using it.
+
+``` xml
+<dependency>
+    <groupId>net.therore.spring.mockito</groupId>
+    <artifactId>therore-spring-mockito</artifactId>
+</dependency>
+```
