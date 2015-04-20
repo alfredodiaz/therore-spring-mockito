@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * Mark a field as mock. It also registers the mock as a bean in the SpringContext.
- * This way the mock is injected in every bean that depends on.
+ * This way the mock is injected in every bean that depends on it.
  * The class containing annotated fields has to be annotated with
  * &#064;{@link net.therore.spring.mockito.EnableMockedBean}.
  */

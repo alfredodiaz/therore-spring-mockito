@@ -3,7 +3,7 @@
 This project is a fork of [springmockedtests](https://github.com/knes1/springmockedtests) and uses the same method for
 injecting beans. Thank you a lot, [Kresimir](https://github.com/knes1).
 
-The goal is to have a mechanism to inject a mock in the Spring Context so it can replace the original ones.
+The goal is to have a mechanism to inject a mock in the Spring Context so it can replace the original one.
 I have used annotations in a bit different way.
 
 Here's the test class:
@@ -32,13 +32,11 @@ public class MySampleServiceTest {
 }
 ```
 
-The class have to be annotated with `@EnableMockedBean`and every "*mocked bean*" with `MockedBean` To work properly.
+The class have to be annotated with `@EnableMockedBean`and every "*mocked bean*" with `@MockedBean` to work properly.
 
-In this example a mock of type `HelloWorldService` is injected in the context and autowired in the field
-`helloWorldService`.
+In this example a mock of type `HelloWorldService` is injected in the context and is autowired to the field `helloWorldService`.
 
-
-Include the following dependency in your pom for using it.
+Include the following dependency in your *pom* file in order to use it.
 
 ``` xml
 <dependency>
