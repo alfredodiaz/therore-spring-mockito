@@ -3,14 +3,20 @@
     <groupId>net.therore.spring.mockito</groupId>
     <artifactId>therore-spring-mockito</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <name>therore-spring-mockito</name>
     <description>Therore Spring Mockito</description>
-    <url>http://github.com/alfredodiaz/therore.net</url>
+    <url>https://github.com/alfredodiaz/therore-spring-mockitot</url>
     <properties>
-        <gpg.skip>true</gpg.skip>
+		<gpg.skip>true</gpg.skip>
         <spring.version>4.1.5.RELEASE</spring.version>
         <spring.boot.version>1.2.2.RELEASE</spring.boot.version>
+        <distributionManagement.snapshotRepository.id>sonatype-nexus-snapshots</distributionManagement.snapshotRepository.id>
+        <distributionManagement.snapshotRepository.name>Sonatype Nexus Snapshots</distributionManagement.snapshotRepository.name>
+        <distributionManagement.snapshotRepository.url>https://oss.sonatype.org/content/repositories/snapshots</distributionManagement.snapshotRepository.url>
+        <distributionManagement.repository.id>sonatype-nexus-staging</distributionManagement.repository.id>
+        <distributionManagement.repository.name>Sonatype Nexus Staging</distributionManagement.repository.name>
+        <distributionManagement.repository.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</distributionManagement.repository.url>
     </properties>
     <inceptionYear>2015</inceptionYear>
     <licenses>
@@ -31,14 +37,13 @@
         <maven>2.0.9</maven>
     </prerequisites>
     <scm>
-        <url>http:///github.com/alfredodiaz/therore.net</url>
-        <connection>scm:git:ssh://github.com/alfredodiaz/therore.net.git</connection>
-        <developerConnection>scm:git:git+ssh://git@github.com/alfredodiaz/therore.net.git</developerConnection>
-        <tag>therore</tag>
+        <url>http://github.com/alfredodiaz/therore-spring-mockito</url>
+        <connection>scm:git:ssh://github.com/alfredodiaz/therore-spring-mockito.git</connection>
+        <developerConnection>scm:git:git+ssh://git@github.com/alfredodiaz/therore-spring-mockito.git</developerConnection>
     </scm>
     <issueManagement>
         <system>GitHub Issue Management</system>
-        <url>https://github.com/alfredodiaz/therore.net/${project.artifactId}/issues</url>
+        <url>https://github.com/alfredodiaz/therore-spring-mockito/issues</url>
     </issueManagement>
 
     <build>
@@ -152,14 +157,14 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>${distributionManagement.snapshotRepository.id}</id>
+            <name>${distributionManagement.snapshotRepository.name}</name>
+            <url>${distributionManagement.snapshotRepository.url}</url>
         </snapshotRepository>
         <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>${distributionManagement.repository.id}</id>
+            <name>${distributionManagement.repository.name}</name>
+            <url>${distributionManagement.repository.url}</url>
         </repository>
     </distributionManagement>
 
