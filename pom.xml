@@ -3,7 +3,7 @@
     <groupId>net.therore.spring.mockito</groupId>
     <artifactId>therore-spring-mockito</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>therore-spring-mockito</name>
     <description>Therore Spring Mockito</description>
     <url>https://github.com/alfredodiaz/therore-spring-mockitot</url>

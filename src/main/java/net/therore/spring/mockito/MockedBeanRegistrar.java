@@ -28,7 +28,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.StandardAnnotationMetadata;
 
 import java.lang.reflect.Field;
 
@@ -40,7 +39,13 @@ public class MockedBeanRegistrar implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        Field[] fields = ((StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getDeclaredFields();
+        Field[] fields;
+        try {
+            fields = Thread.currentThread().getContextClassLoader().loadClass(importingClassMetadata.getClassName())
+                    .getDeclaredFields();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         for (Field field : fields) {
             MockedBean mockedBean = field.getAnnotation(MockedBean.class);
             if (mockedBean!=null)

@@ -42,6 +42,7 @@ public @interface MockedBean {
      * The name of this bean, or if plural, aliases for this bean. If left unspecified
      * the name of the bean is the name of the annotated method. If specified, the method
      * name is ignored.
+     * @return the name(s) of the bean(s)
      */
     String[] value() default {};
 
