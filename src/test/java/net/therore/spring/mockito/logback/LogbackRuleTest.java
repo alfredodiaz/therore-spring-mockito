@@ -18,80 +18,74 @@
 
 package net.therore.spring.mockito.logback;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Rule;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static net.therore.spring.mockito.logback.LogbackMockito.*;
-import static net.therore.spring.mockito.logback.LogbackMockito.verify;
+import static net.therore.spring.mockito.logback.EventMatchers.errorWithException;
+import static net.therore.spring.mockito.logback.EventMatchers.text;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
 /**
  * @author <a href="mailto:alfredo.diaz@therore.net">Alfredo Diaz</a>
  */
+@Slf4j
 public class LogbackRuleTest {
 
 	@Rule
-	public LogbackRule logbackRule = new LogbackRule();
+	public LogbackRule rule = new LogbackRule();
 
 	@Test
 	public void happyPath() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.info("info message");
 
-        verify(logContainsErrorWithException(), never());
+        verify(rule.getLog(), never()).contains(argThat(errorWithException()));
 	}
 
 	@Test(expected = AssertionError.class)
 	public void exceptionPath() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.error("error message", new RuntimeException());
 
-        verify(logContainsErrorWithException(), never());
+        verify(rule.getLog(), never()).contains(argThat(errorWithException()));
 	}
 
 	@Test(expected = AssertionError.class)
 	public void combinedExceptionPath() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.info("info message");
 		log.error("error message", new RuntimeException());
 
-        verify(logContainsErrorWithException(), never());
+        verify(rule.getLog(), never()).contains(argThat(errorWithException()));
 	}
 
 	@Test
 	public void testContainingSpecificMessage() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.info("specific message");
 
-        verify(logContainsText("specific message"), atLeastOnce());
+        verify(rule.getLog(), atLeastOnce()).contains(argThat(text("specific message")));
 	}
 
 	@Test
 	public void testContainingCombinedSpecificMessage() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.info("specific message");
 		log.info("other message");
 
-        verify(logContainsText("specific message"), only());
+        verify(rule.getLog(), atLeastOnce()).contains(argThat(text("specific message")));
 	}
 
 	@Test(expected = AssertionError.class)
 	public void testNotContainingSpecificMessage() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.info("specific message");
 
-        verify(logContainsText("specific message"), never());
+        verify(rule.getLog(), never()).contains(argThat(text("specific message")));
 	}
 
 	@Test(expected = AssertionError.class)
 	public void testNotContainingCombinedSpecificMessage() {
-		Logger log = LoggerFactory.getLogger(getClass());
 		log.info("other message");
 		log.info("specific message");
 
-        verify(logContainsText("specific message"), never());
+        verify(rule.getLog(), never()).contains(argThat(text("specific message")));
 	}
 
 }

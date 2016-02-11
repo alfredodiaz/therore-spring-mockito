@@ -21,51 +21,67 @@ package net.therore.spring.mockito.logback;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.slf4j.LoggerFactory;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author <a href="mailto:alfredo.diaz@therore.net">Alfredo Diaz</a>
  */
 public class LogbackRule implements TestRule {
 
-    private final Logger rootLogger = ((Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME));
+    private Appender appender;
 
-    @Getter(AccessLevel.PACKAGE)
-    static private ThreadLocal<Appender<ILoggingEvent>> appenderMock = new ThreadLocal<Appender<ILoggingEvent>>();
+    @Getter
+    private Log log;
 
-	@Override
+    private final Logger rootLogger;
+
+    public LogbackRule() {
+        this(((Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)));
+    }
+
+    public LogbackRule(Logger rootLogger) {
+        this.rootLogger = rootLogger;
+        reset();
+    }
+
+    private void reset() {
+        appender = null;
+        log = null;
+    }
+
+    @Override
 	public Statement apply(final Statement base, final Description description) {
 		return new Statement() {
 			@Override
 			public void evaluate() throws Throwable {
-				before();
-				try {
+                rootLogger.addAppender(appender = mock(Appender.class));
+                log = mock(Log.class);
+                Mockito.doAnswer(new Answer() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        log.contains((ILoggingEvent) invocation.getArguments()[0]);
+                        return null;
+                    }
+                }).when(appender).doAppend(any(ILoggingEvent.class));
+
+                try {
 					base.evaluate();
 				} finally {
-					after();
+                    rootLogger.detachAppender(appender);
+                    reset();
 				}
 			}
 		};
-	}
-
-	private void before() {
-        Appender<ILoggingEvent> mock = mock(Appender.class);
-        appenderMock.set(mock);
-		when(mock.getName()).thenReturn("MOCK");
-		rootLogger.addAppender(mock);
-	}
-
-	private void after() {
-		rootLogger.detachAppender(appenderMock.get());
-        appenderMock.remove();
 	}
 
 }
